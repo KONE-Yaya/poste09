@@ -9,12 +9,11 @@ pipeline {
 
         stage('Login Docker') {
             steps {
-                withCredentials([string(credentialsId: 
-                'POSTE09_DOCKER_PASSWORD', variable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u 
-                    $DOCKER_USER --password-stdin'
+                withCredentials([string(credentialsId: 'POSTE09_DOCKER_PASSWORD', variable: 'DOCKER_PASS')]) {
+                    sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
                 }
             }
+
         }
         stage('Build') {
             steps {
