@@ -3,8 +3,19 @@ pipeline {
 
     environment {
         APP_NAME = 'my-app'
+        DOCKER_USER = 'koneyayangolo'
     }
     stages {
+
+        stage('Login Docker') {
+            steps {
+                withCredentials([string(credentialsId: 
+                'POSTE09_DOCKER_PASSWORD', variable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u 
+                    $DOCKER_USER --password-stdin'
+                }
+            }
+        }
         stage('Build') {
             steps {
                 script {
@@ -20,11 +31,11 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-            script {
-            def buildVersion = "1.0.${env.BUILD_NUMBER}"
-                echo "Deploying ${APP_NAME} version ${buildVersion}"
+                script {
+                    def buildVersion = "1.0.${env.BUILD_NUMBER}"
+                    echo "Deploying ${APP_NAME} version ${buildVersion}"
+                }
             }
         }
-    }
     }
 }
