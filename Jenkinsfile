@@ -4,6 +4,7 @@ pipeline {
     environment {
         APP_NAME = 'my-app'
         DOCKER_USER = 'koneyayangolo'
+        ARTIFACT_NAME = 'app.tar.gz'
     }
     stages {
 
@@ -18,10 +19,12 @@ pipeline {
 
         }
         stage('Build') {
-            steps {
-                script {
-                    def buildVersion = "1.0.${env.BUILD_NUMBER}"
-                    echo "Building ${APP_NAME} version ${buildVersion}"
+            stage('Build') {
+                steps {
+                    sh 'echo "Contenu de l\'application" > app.txt'
+                    sh 'tar -czf ${ARTIFACT_NAME} app.txt'
+                    archiveArtifacts artifacts: ARTIFACT_NAME, 
+                    fingerprint: true
                 }
             }
         }
@@ -32,10 +35,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                script {
-                    def buildVersion = "1.0.${env.BUILD_NUMBER}"
-                    echo "Deploying ${APP_NAME} version ${buildVersion}"
-                }
+                echo "Déploiement de ${ARTIFACT_NAME}"
             }
         }
     }
